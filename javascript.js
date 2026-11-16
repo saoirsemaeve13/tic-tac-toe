@@ -75,6 +75,14 @@ function GameController(
     );
     board.placeToken(column, row, getActivePlayer().token);
 
+    if (winningMoves()) {
+      console.log(`${getActivePlayer().name} wins!`);
+      return;
+    } else if (checkTie()) {
+      console.log(`It's a tie!`);
+      return;
+    }
+
     switchPlayerTurn();
     printNewRound();
   };
@@ -82,6 +90,63 @@ function GameController(
     playRound,
     getActivePlayer,
   };
+
+  function winningMoves() {
+    const winLose = board.getBoard();
+    const winningCombos = [
+      [
+        [0, 0],
+        [0, 1],
+        [0, 2],
+      ],
+      [
+        [1, 0],
+        [1, 1],
+        [1, 2],
+      ],
+      [
+        [2, 0],
+        [2, 1],
+        [2, 2],
+      ],
+      [
+        [0, 0],
+        [1, 0],
+        [2, 0],
+      ],
+      [
+        [0, 1],
+        [1, 1],
+        [2, 1],
+      ],
+      [
+        [0, 2],
+        [1, 2],
+        [2, 2],
+      ],
+      [
+        [0, 0],
+        [1, 1],
+        [2, 2],
+      ],
+      [
+        [0, 2],
+        [1, 1],
+        [2, 0],
+      ],
+    ];
+    return winningCombos.some((combo) =>
+      combo.every(
+        ([row, col]) =>
+          winLose[row][col].getValue() === getActivePlayer().token,
+      ),
+    );
+  }
+
+  function checkTie() {
+    const tieBoard = board.getBoard();
+    return tieBoard.flat().every((cell) => cell.getValue() !== 0);
+  }
 }
 
 const game = GameController();
