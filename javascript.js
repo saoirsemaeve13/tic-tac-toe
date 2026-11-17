@@ -58,6 +58,12 @@ function GameController(
   ];
 
   let activePlayer = players[0];
+  const gameState = {
+    isOver: false,
+    statusMessage: `${activePlayer.name}'s turn.`,
+  };
+
+  const getGameState = () => gameState;
 
   const switchPlayerTurn = () => {
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
@@ -76,20 +82,25 @@ function GameController(
     board.placeToken(column, row, getActivePlayer().token);
 
     if (winningMoves()) {
-      console.log(`${getActivePlayer().name} wins!`);
+      gameState.isOver = true;
+      gameState.statusMessage = `${getActivePlayer().name} wins!`;
       return;
     } else if (checkTie()) {
+      gameState.isOver = true;
+      gameState.statusMessage = "It's a tie!";
       console.log(`It's a tie!`);
       return;
+    } else {
+      switchPlayerTurn();
+      gameState.statusMessage = `${getActivePlayer().name}'s turn.`;
     }
-
-    switchPlayerTurn();
     printNewRound();
   };
   return {
     playRound,
     getActivePlayer,
     getBoard: board.getBoard,
+    getGameState,
   };
 
   function winningMoves() {
@@ -172,9 +183,12 @@ function ScreenController() {
         gameBoard.appendChild(boardBtns);
       });
     });
-    playerStatus.textContent = `${game.getActivePlayer().name}'s turn.`;
+    playerStatus.textContent = game.getGameState().statusMessage;
   }
   gameBoard.addEventListener("click", (e) => {
+    if (game.getGameState().isOver) {
+      return;
+    }
     const playCol = e.target.dataset.column;
     const playRow = e.target.dataset.row;
     if (!playCol || !playRow) return;
