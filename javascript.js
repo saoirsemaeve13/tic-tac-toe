@@ -89,6 +89,7 @@ function GameController(
   return {
     playRound,
     getActivePlayer,
+    getBoard: board.getBoard,
   };
 
   function winningMoves() {
@@ -150,3 +151,25 @@ function GameController(
 }
 
 const game = GameController();
+
+function ScreenController() {
+  const playerStatus = document.getElementById("playerStatus");
+  const gameBoard = document.getElementById("gameBoard");
+
+  function drawBoard() {
+    gameBoard.textContent = "";
+    const boardContent = game.getBoard();
+
+    boardContent.forEach((row, rowIndex) => {
+      row.forEach((cell, colIndex) => {
+        const boardBtns = document.createElement("button");
+        boardBtns.textContent = cell.getValue();
+        boardBtns.dataset.row = rowIndex;
+        boardBtns.dataset.column = colIndex;
+        gameBoard.appendChild(boardBtns);
+      });
+    });
+  }
+  drawBoard();
+}
+ScreenController();
