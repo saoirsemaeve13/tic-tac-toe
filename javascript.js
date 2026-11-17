@@ -172,6 +172,7 @@ function ScreenController() {
         gameBoard.appendChild(boardBtns);
       });
     });
+    playerStatus.textContent = `${game.getActivePlayer().name}'s turn.`;
   }
   gameBoard.addEventListener("click", (e) => {
     const playCol = e.target.dataset.column;
