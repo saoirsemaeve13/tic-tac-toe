@@ -3,12 +3,15 @@ function Gameboard() {
   const columns = 3;
   const board = [];
 
-  for (let i = 0; i < rows; i++) {
-    board[i] = [];
-    for (let j = 0; j < columns; j++) {
-      board[i].push(Cell());
+  function resetBoard() {
+    for (let i = 0; i < rows; i++) {
+      board[i] = [];
+      for (let j = 0; j < columns; j++) {
+        board[i].push(Cell());
+      }
     }
   }
+  resetBoard();
 
   const getBoard = () => board;
 
@@ -27,7 +30,7 @@ function Gameboard() {
     );
     console.log(boardWithCellValues);
   };
-  return { getBoard, placeToken, printBoard };
+  return { getBoard, placeToken, printBoard, resetBoard };
 }
 
 function Cell() {
@@ -80,8 +83,6 @@ function GameController(
     console.log();
     if (!board.placeToken(column, row, getActivePlayer().token)) {
       return;
-    } else {
-      board.placeToken(column, row, getActivePlayer().token);
     }
 
     if (winningMoves()) {
@@ -98,12 +99,6 @@ function GameController(
       gameState.statusMessage = `${getActivePlayer().name}'s turn.`;
     }
     printNewRound();
-  };
-  return {
-    playRound,
-    getActivePlayer,
-    getBoard: board.getBoard,
-    getGameState,
   };
 
   function winningMoves() {
@@ -162,6 +157,21 @@ function GameController(
     const tieBoard = board.getBoard();
     return tieBoard.flat().every((cell) => cell.getValue() !== 0);
   }
+
+  function resetGame() {
+    board.resetBoard();
+    activePlayer = players[0];
+    gameState.isOver = false;
+    gameState.statusMessage = `${activePlayer.name}'s turn.`;
+  }
+
+  return {
+    playRound,
+    getActivePlayer,
+    getBoard: board.getBoard,
+    getGameState,
+    resetGame,
+  };
 }
 
 const game = GameController();
@@ -196,6 +206,12 @@ function ScreenController() {
     const playRow = e.target.dataset.row;
     if (!playCol || !playRow) return;
     game.playRound(playCol, playRow);
+    drawBoard();
+  });
+
+  const resetBtn = document.getElementById("resetBtn");
+  resetBtn.addEventListener("click", () => {
+    game.resetGame();
     drawBoard();
   });
 
