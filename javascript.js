@@ -14,9 +14,10 @@ function Gameboard() {
 
   const placeToken = (column, row, player) => {
     if (board[row][column].getValue() != 0) {
-      return;
+      return false;
     } else {
       board[row][column].addToken(player);
+      return true;
     }
   };
 
@@ -76,10 +77,12 @@ function GameController(
   };
 
   const playRound = (column, row) => {
-    console.log(
-      `Placing ${getActivePlayer().name}'s token into column ${column}, row ${row}.`,
-    );
-    board.placeToken(column, row, getActivePlayer().token);
+    console.log();
+    if (!board.placeToken(column, row, getActivePlayer().token)) {
+      return;
+    } else {
+      board.placeToken(column, row, getActivePlayer().token);
+    }
 
     if (winningMoves()) {
       gameState.isOver = true;
