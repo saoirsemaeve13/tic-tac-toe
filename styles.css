@@ -40,6 +40,12 @@ main {
 #gameBoard {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  width: 15em;
+  margin: auto;
+}
+
+#gameBoard > button {
+  aspect-ratio: 1 /1;
 }
 
 .resetDiv {

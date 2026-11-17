@@ -164,12 +164,23 @@ function ScreenController() {
       row.forEach((cell, colIndex) => {
         const boardBtns = document.createElement("button");
         boardBtns.textContent = cell.getValue();
+        if (boardBtns.textContent === "0") {
+          boardBtns.textContent = "";
+        }
         boardBtns.dataset.row = rowIndex;
         boardBtns.dataset.column = colIndex;
         gameBoard.appendChild(boardBtns);
       });
     });
   }
+  gameBoard.addEventListener("click", (e) => {
+    const playCol = e.target.dataset.column;
+    const playRow = e.target.dataset.row;
+    if (!playCol || !playRow) return;
+    game.playRound(playCol, playRow);
+    drawBoard();
+  });
+
   drawBoard();
 }
 ScreenController();
